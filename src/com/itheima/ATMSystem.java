@@ -1,6 +1,7 @@
 package com.itheima;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -43,11 +44,12 @@ public class ATMSystem {
         System.out.println("=======系统开户操作=======");
         //1.创建一个账户对象，用于后期封装账户信息
         Account account = new Account();
+
         //2.录入当前这个账户的信息，注入到账户对象中去
         System.out.println("请您输入账户用户名：");
         String userName = sc.next();
-        account.setUserName(userName);
-
+        account.setUserName(userName);  //设置用户名
+        //下面开始设置用户密码
         while (true) {
             System.out.println("请您输入账户密码：");
             String passWord = sc.next();
@@ -61,43 +63,59 @@ public class ATMSystem {
                 System.out.println("两次密码不一致，请重新输入：");
             }
         }
+        //为账户设置额度
         System.out.println("请您输入当次限额：");
         double quotaMoney = sc.nextDouble();
         account.setQuotaMoney(quotaMoney);
 
-        // 为账户随机一个8位且与其他账户不同的卡号！！！
-
-
-
-
+        // 为账户随机一个8位且与其他账户不同的卡号！！！(独立功能,独立成方法)
+        String cardID = getRandomCardID(accounts);
+        account.setCardId(cardID);
         //3.把账户对象添加到账户集合中去
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        accounts.add(account);
+        System.out.println("恭喜您：" + userName + "先生," + "您开户成功，您的卡号是：" + cardID + ",请妥善保管！");
     }
+
+    /**
+     * 为账户生成8位与其他卡号不同的数字
+     * @return  cardID
+     */
+    private static String getRandomCardID(ArrayList<Account> accounts) {
+        Random r = new Random();
+        while (true) {
+            //1.先生成8位数字
+            String cardID = "";
+            for (int i = 0; i < 8; i++) {
+                cardID += r.nextInt(10);
+            }
+            //2.判断这个8位的卡号是否与其他用户重复了
+            //根据这个卡号去查询账户的对象
+            Account acc = getAccountByCarID(cardID, accounts);
+            if (acc == null){
+                //说明此时cardID没有重复,可以使用这个新卡号了
+                return cardID;
+            }
+        }
+    }
+
+
+    /**
+     * 根据卡号查询出一个账户信息出来
+     * @param cardID    卡号
+     * @param accounts  全部账户的信息
+     * @return  账户对象 | null
+     */
+    private static Account getAccountByCarID(String cardID, ArrayList<Account> accounts){
+        //循环遍历所有用户
+        for (int i = 0; i < accounts.size(); i++) {
+            Account acc = accounts.get(i);  //当前账户
+            //如果当前的账户的卡号和我要找的卡号相同
+            if (acc.getCardId().equals(cardID)){
+                return acc;
+            }
+        }
+        return null;//没有找到这个账号
+    }
+
+
 }
