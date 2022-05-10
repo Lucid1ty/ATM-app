@@ -111,18 +111,81 @@ public class ATMSystem {
                     break;
                 case 5:
                     //修改密码
-                    break;
+                    updatePassWord(sc,acc);
+                    return; //回到首页(登录页面)
                 case 6:
                     //退出
                     System.out.println("退出成功！");
                     return; //让当前方法停止执行
                 case 7:
                     //注销账户
-                    break;
+                    if (deleteAccount(acc, sc, accounts)){
+                        return; //销户成功,返回首页
+                    }else{
+                        break; //销户失败,留在操作页
+                    }
                 default:
                     System.out.println("您输入的名字不存在！");
-
             }
+        }
+    }
+
+    /**
+     * 销户功能
+     * @param acc 当前账户对象
+     * @param sc 扫描器
+     * @param accounts 全部账户的集合对象
+     */
+    private static boolean deleteAccount(Account acc, Scanner sc, ArrayList<Account> accounts) {
+        System.out.println("=======用户销户=======");
+        System.out.println("请问您真的要销户嘛?(y/n)");
+        String rs = sc.next();
+        if ("y".equals(rs)) {
+            //销户
+            //从当前账户集合中删除账户对象,销户就完成了！
+            if (acc.getMoney() > 0) {
+                System.out.println("您当前账户的余额大于0,不允许销户！");
+            } else {
+                //销户
+                accounts.remove(acc);
+                System.out.println("销户成功！");
+                return true;
+            }
+        } else {
+            System.out.println("好的,当前账户继续保留");
+        }
+        return false;
+    }
+
+    /**
+     * 修改密码功能
+     * @param sc 扫描器
+     * @param acc 当前登录成功的账户对象
+     */
+    private static void updatePassWord(Scanner sc, Account acc) {
+        System.out.println("=======用户密码修改=======");
+        System.out.println("请您输入当前密码：");
+        String passWord = sc.next();
+        if (acc.getPassWord().equals(passWord)){
+            while (true) {
+                //密码输入正确,可以更改密码
+                //输入新密码
+                System.out.println("请您输入新密码：");
+                String newPassWord = sc.next();
+                System.out.println("请您再次输入新密码：");
+                String okPassWord = sc.next();
+                if(newPassWord.equals(okPassWord)){
+                    //两次密码输入一致,更改密码！
+                    acc.setPassWord(newPassWord);
+                    System.out.println("密码修改成功！");
+                    return; //结束修改密码功能！
+                }else{
+                    //两次密码输入不一致
+                    System.out.println("两次密码输入不一致！");
+                }
+            }
+        }else{
+            System.out.println("密码错误！");
         }
     }
 
@@ -238,12 +301,12 @@ public class ATMSystem {
         System.out.println("=======用户存钱操作=======");
         System.out.println("请您输入存款金额：");
         double money = sc.nextDouble();
-
         //更新账户余额：原来的钱 + 新存入的钱
         acc.setMoney(acc.getMoney() + money);
         System.out.println("完成！当前账户信息如下：");
         showAccount(acc);
     }
+
 
     /**
      * 展示账户信息
@@ -295,6 +358,7 @@ public class ATMSystem {
         accounts.add(account);
         System.out.println("恭喜您：" + userName + "先生," + "您开户成功，您的卡号是：" + cardID + ",请妥善保管！");
     }
+
 
     /**
      * 为账户生成8位与其他卡号不同的数字
