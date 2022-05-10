@@ -23,9 +23,10 @@ public class ATMSystem {
             switch (command){
                 case 1:
                     //用户登录
+                    login(accounts,sc);
                     break;
                 case 2:
-                    //用户注册
+                    //用户账户开户
                     register(accounts, sc);
                     break;
                 default:
@@ -35,6 +36,50 @@ public class ATMSystem {
 
 
     }
+
+    /**
+     * 登录功能
+     * @param accounts 全部账户对象的集合
+     * @param sc 扫描器
+     */
+    private static void login(ArrayList<Account> accounts, Scanner sc) {
+        System.out.println("=======系统登录操作=======");
+        //1.判断账户集合中是否存在账户,如果不存在,登录功能不能进行。
+        if(accounts.size() == 0){
+            System.out.println("当前系统中无任何账户,请先开户,再来登录~~~");
+            return; //结束方法执行
+        }
+
+        //2.进入登录操作
+        while (true) {
+            System.out.println("请您输入登录卡号：");
+            String cardID = sc.next();
+            //3.判断卡号是否存在：根据卡号去账户集合中查询账户对象。
+            Account acc = getAccountByCarID(cardID, accounts);
+            if (acc != null){
+                while (true) {
+                    //卡号存在!
+                    //4.让用户输入密码,并且判断密码是否正确
+                    System.out.println("请您输入登录密码：");
+                    String passWord = sc.next();
+                    //判断密码是否正确
+                    if(acc.getPassWord().equals(passWord)){
+                        //密码正确
+                        System.out.println("登录成功！" + acc.getUserName() + "先生/女士,您的卡号是：" + acc.getCardId());
+                        //查询 转账 存款 取款
+                    }else{
+                        //密码错误
+                        System.out.println("密码错误！");
+                    }
+                }
+            }else{
+                // 卡号不存在！
+                System.out.println("对不起,您输入的卡号不存在！");
+            }
+        }
+
+    }
+
 
     /**
      * 用户开户功能的实现
