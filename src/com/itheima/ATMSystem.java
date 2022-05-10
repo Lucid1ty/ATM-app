@@ -30,8 +30,6 @@ public class ATMSystem {
                 default -> System.out.println("您输入的命令操作不存在");
             }
         }
-
-
     }
 
     /**
@@ -65,10 +63,8 @@ public class ATMSystem {
                         System.out.println("登录成功！" + acc.getUserName() + "先生/女士,您的卡号是：" + acc.getCardId());
                         //查询 转账 存款 取款
                         //展示登录后的操作页
-                        showUserCommand(sc, acc);
+                        showUserCommand(sc, acc, accounts);
                         return; //结束登录方法
-
-
                     }else{
                         //密码错误
                         System.out.println("密码错误！");
@@ -79,13 +75,12 @@ public class ATMSystem {
                 System.out.println("对不起,您输入的卡号不存在！");
             }
         }
-
     }
 
     /**
      * 展示登录后的操作页
      */
-    private static void showUserCommand(Scanner sc,Account acc) {
+    private static void showUserCommand(Scanner sc,Account acc,ArrayList<Account> accounts) {
         while (true) {
             System.out.println("=======用户操作页=======");
             System.out.println("1.查询账户");
@@ -112,6 +107,7 @@ public class ATMSystem {
                     break;
                 case 4:
                     //转账
+                    transferMoney(sc, acc, accounts);
                     break;
                 case 5:
                     //修改密码
@@ -128,9 +124,72 @@ public class ATMSystem {
 
             }
         }
-
-
     }
+
+
+    /**
+     * 转账功能
+     * @param sc 扫描器
+     * @param acc 自己的账户对象(当前登录的账户)
+     * @param accounts 全部账户对象的集合
+     */
+    private static void transferMoney(Scanner sc, Account acc, ArrayList<Account> accounts) {
+        System.out.println("=======用户转账操作=======");
+        //1.判断是否足够2个账户
+        if(accounts.size() < 2){
+            System.out.println("当前系统中账户数量不足2个，无法完成转账！");
+            return; //结束当前方法
+        }
+        //2.判断自己的账户是否有钱
+        if(acc.getMoney() == 0){
+            System.out.println("您当前账户余额为0,无法转账");
+            return; //结束当前方法
+        }
+        while (true) {
+            //3.开始转账
+            System.out.println("请输入对方卡号：");
+            String cardID = sc.next();
+            //这个卡号不能是自己的卡号
+            if (cardID.equals(acc.getCardId())){
+                System.out.println("不能给自己转账！");
+                continue; //结束本次循环开始下一次循环
+            }
+            //判断这个卡号是否存在
+            Account account = getAccountByCarID(cardID, accounts);
+            if (account == null){
+                System.out.println("您输入的卡号不存在！");
+            }else{
+                //这个账户对象存在
+                //验证对方姓名
+                String userName = account.getUserName();
+                String tip = "*" + userName.substring(1);   //给用户名打码
+                System.out.println("请您输入[" + tip + "]的姓氏");
+                String preName = sc.next();
+                //认证姓氏是否正确
+                if(userName.startsWith(preName)){
+                    while (true) {
+                        //认证通过,开始转账
+                        System.out.println("请您输入转账金额：");
+                        double money = sc.nextDouble();
+                        //判断余额是否足够
+                        if (money > acc.getMoney()){
+                            System.out.println("余额不足！您最多可以转账：" + acc.getMoney() + "元");
+                        }else{
+                            //余额足够,可以转账
+                            acc.setMoney(acc.getMoney() - money);
+                            account.setMoney(account.getMoney() + money);
+                            System.out.println("转账成功！您当前账户余额：" + acc.getMoney());
+                            return; //结束转账方法！
+                        }
+                    }
+                }else{
+                    //认证失败
+                    System.out.println("您输入的信息有误！");
+                }
+            }
+        }
+    }
+
 
     /**
      * 取款功能
@@ -207,7 +266,6 @@ public class ATMSystem {
         System.out.println("=======系统开户操作=======");
         //1.创建一个账户对象，用于后期封装账户信息
         Account account = new Account();
-
         //2.录入当前这个账户的信息，注入到账户对象中去
         System.out.println("请您输入账户用户名：");
         String userName = sc.next();
@@ -230,7 +288,6 @@ public class ATMSystem {
         System.out.println("请您输入当次限额：");
         double quotaMoney = sc.nextDouble();
         account.setQuotaMoney(quotaMoney);
-
         // 为账户随机一个8位且与其他账户不同的卡号！！！(独立功能,独立成方法)
         String cardID = getRandomCardID(accounts);
         account.setCardId(cardID);
@@ -279,6 +336,4 @@ public class ATMSystem {
         }
         return null;//没有找到这个账号
     }
-
-
 }
