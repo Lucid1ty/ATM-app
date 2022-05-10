@@ -104,9 +104,11 @@ public class ATMSystem {
                     break;
                 case 2:
                     //存款
+                    depositMoney(acc, sc);
                     break;
                 case 3:
                     //取款
+                    drawMoney(acc, sc);
                     break;
                 case 4:
                     //转账
@@ -128,6 +130,60 @@ public class ATMSystem {
         }
 
 
+    }
+
+    /**
+     * 取款功能
+     * @param acc 当前账户对象
+     * @param sc 扫描器
+     */
+    private static void drawMoney(Account acc, Scanner sc) {
+        System.out.println("=======用户取款操作=======");
+        //1.判断是否足够100元
+        if(acc.getMoney() < 100){
+            System.out.println("当前账户中余额不足100元,无法取款！");
+            return;
+        }
+        while (true) {
+            //2.提示用户输入取款金额
+            System.out.println("请您输入取款金额：");
+            double money = sc.nextDouble();
+
+            //3.判断是否满足限额要求
+            if (money > acc.getQuotaMoney()){
+                System.out.println("对不去,您本次取款大于单次限额,无法取款！单次限额：" + acc.getQuotaMoney());
+            }else{
+                //4.没有超过限额
+                //是否超过账户总余额
+                if(money > acc.getMoney()){
+                    System.out.println("余额不足！您目前的余额是：" + acc.getMoney());
+                }else{
+                    //可以取款了
+                    System.out.println("您本次取款：" + money);
+                    //更新余额
+                    acc.setMoney(acc.getMoney() - money);
+                    //取钱结束 展示信息
+                    showAccount(acc);
+                    return; //终止取款方法
+                }
+            }
+        }
+    }
+
+    /**
+     * 存钱
+     * @param acc 当前账户对象
+     * @param sc 扫描器
+     */
+    private static void depositMoney(Account acc, Scanner sc) {
+        System.out.println("=======用户存钱操作=======");
+        System.out.println("请您输入存款金额：");
+        double money = sc.nextDouble();
+
+        //更新账户余额：原来的钱 + 新存入的钱
+        acc.setMoney(acc.getMoney() + money);
+        System.out.println("完成！当前账户信息如下：");
+        showAccount(acc);
     }
 
     /**
