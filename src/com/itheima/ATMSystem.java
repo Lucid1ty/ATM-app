@@ -20,17 +20,14 @@ public class ATMSystem {
             System.out.println("2.账户开户");
             System.out.println("请选择操作：");
             int command = sc.nextInt();
-            switch (command){
-                case 1:
-                    //用户登录
-                    login(accounts,sc);
-                    break;
-                case 2:
-                    //用户账户开户
-                    register(accounts, sc);
-                    break;
-                default:
-                    System.out.println("您输入的命令操作不存在");
+            switch (command) {
+                case 1 ->
+                        //用户登录
+                        login(accounts, sc);
+                case 2 ->
+                        //用户账户开户
+                        register(accounts, sc);
+                default -> System.out.println("您输入的命令操作不存在");
             }
         }
 
@@ -152,10 +149,10 @@ public class ATMSystem {
      */
     private static Account getAccountByCarID(String cardID, ArrayList<Account> accounts){
         //循环遍历所有用户
-        for (int i = 0; i < accounts.size(); i++) {
-            Account acc = accounts.get(i);  //当前账户
+        //当前账户
+        for (Account acc : accounts) {
             //如果当前的账户的卡号和我要找的卡号相同
-            if (acc.getCardId().equals(cardID)){
+            if (acc.getCardId().equals(cardID)) {
                 return acc;
             }
         }
