@@ -64,6 +64,11 @@ public class ATMSystem {
                         //密码正确
                         System.out.println("登录成功！" + acc.getUserName() + "先生/女士,您的卡号是：" + acc.getCardId());
                         //查询 转账 存款 取款
+                        //展示登录后的操作页
+                        showUserCommand(sc, acc);
+                        return; //结束登录方法
+
+
                     }else{
                         //密码错误
                         System.out.println("密码错误！");
@@ -75,6 +80,66 @@ public class ATMSystem {
             }
         }
 
+    }
+
+    /**
+     * 展示登录后的操作页
+     */
+    private static void showUserCommand(Scanner sc,Account acc) {
+        while (true) {
+            System.out.println("=======用户操作页=======");
+            System.out.println("1.查询账户");
+            System.out.println("2.存款");
+            System.out.println("3.取款");
+            System.out.println("4.转账");
+            System.out.println("5.修改密码");
+            System.out.println("6.退出");
+            System.out.println("7.注销账户");
+            System.out.println("请选择：");
+            int command = sc.nextInt();
+            switch (command){
+                case 1:
+                    //查询账户
+                    showAccount(acc);
+                    break;
+                case 2:
+                    //存款
+                    break;
+                case 3:
+                    //取款
+                    break;
+                case 4:
+                    //转账
+                    break;
+                case 5:
+                    //修改密码
+                    break;
+                case 6:
+                    //退出
+                    System.out.println("退出成功！");
+                    return; //让当前方法停止执行
+                case 7:
+                    //注销账户
+                    break;
+                default:
+                    System.out.println("您输入的名字不存在！");
+
+            }
+        }
+
+
+    }
+
+    /**
+     * 展示账户信息
+     * @param acc   当前登录的账户
+     */
+    private static void showAccount(Account acc) {
+        System.out.println("=======当前账户信息如下=======");
+        System.out.println("卡号：" + acc.getCardId());
+        System.out.println("姓名：" + acc.getUserName());
+        System.out.println("余额：" + acc.getMoney());
+        System.out.println("限额：" + acc.getQuotaMoney());
     }
 
 
