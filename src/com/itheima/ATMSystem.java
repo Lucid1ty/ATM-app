@@ -18,6 +18,7 @@ public class ATMSystem {
             System.out.println("===========黑马ATM系统===========");
             System.out.println("1.账户登录");
             System.out.println("2.账户开户");
+            System.out.println("3.退出");
             System.out.println("请选择操作：");
             int command = sc.nextInt();
             switch (command) {
@@ -27,6 +28,11 @@ public class ATMSystem {
                 case 2 ->
                         //用户账户开户
                         register(accounts, sc);
+                case 3 -> {
+                    //退出
+                    System.out.println("退出成功！");
+                    return;
+                }
                 default -> System.out.println("您输入的命令操作不存在");
             }
         }
@@ -367,7 +373,7 @@ public class ATMSystem {
     private static String getRandomCardID(ArrayList<Account> accounts) {
         Random r = new Random();
         while (true) {
-            //1.先生成8位数字
+            //1.生成8位数字
             String cardID = "";
             for (int i = 0; i < 8; i++) {
                 cardID += r.nextInt(10);
